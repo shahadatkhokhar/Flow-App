@@ -2,5 +2,13 @@
     <string name="app_name">Flow</string>
     <string name="appname">Flow</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="update">Update</string>
+
+
+
+
 </resources>

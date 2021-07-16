@@ -39,7 +39,7 @@
                     android:text="Item Name: " />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName3"
+                    android:id="@+id/item_name_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
@@ -57,7 +57,7 @@
                 android:weightSum="4">
 
                 <TextView
-                    android:id="@+id/item_amount"
+                    android:id="@+id/item_amount_label"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2.8"
@@ -65,13 +65,13 @@
                     android:text="Amount:" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName2"
+                    android:id="@+id/item_amount_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:ems="10"
-                    android:hint="$20"
-                    android:inputType="textPersonName"
+                    android:hint="20"
+                    android:inputType="phone"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="Create"
+            android:text="@string/create"
             android:textColor="@color/white"
             app:rippleColor="@color/white" />
 
@@ -93,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="#00FFFFFF"
-            android:text="Cancel" />
+            android:text="@string/cancel" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
