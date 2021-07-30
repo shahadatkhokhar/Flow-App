@@ -71,10 +71,37 @@
                     android:layout_weight="1.5"
                     android:ems="10"
                     android:hint="20"
-                    android:inputType="phone"
+                    android:inputType="number|none"
+                    android:digits="0123456789"
                     android:textSize="16sp" />
 
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/debit_credit_radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/debit_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/debit" />
+
+                <RadioButton
+                    android:id="@+id/credit_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/credit" />
+            </RadioGroup>
         </LinearLayout>
 
         <Button

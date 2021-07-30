@@ -7,8 +7,8 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="update">Update</string>
-
-
+    <string name="debit">Debit</string>
+    <string name="credit">Credit</string>
 
 
 </resources>

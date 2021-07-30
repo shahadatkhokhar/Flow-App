@@ -1,11 +1,12 @@
 package com.expenses.flow;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemList {
+public class ItemList implements Serializable {
     private String itemName;
     private Integer itemAmount;
 

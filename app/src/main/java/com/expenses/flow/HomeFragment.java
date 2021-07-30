@@ -1,19 +1,18 @@
 package com.expenses.flow;
 
-import android.graphics.drawable.Drawable;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,18 +21,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import com.expenses.flow.ItemList;
 
-import com.expenses.flow.RecyclerViewList.customListAdapter;
+import com.expenses.flow.RecyclerViewList.allListAdapter;
+import com.expenses.flow.RecyclerViewList.creditListAdapter;
+import com.expenses.flow.RecyclerViewList.debitListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.skydoves.powerspinner.PowerSpinnerView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static com.expenses.flow.GlobalContent.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,9 +55,30 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private ArrayList<ItemList> mArrayList = new ArrayList<>();
-    private RecyclerView mRecyclerView1;
-    private customListAdapter mAdapter;
+    private ArrayList<ItemList> debitList = new ArrayList<>();
+    private ArrayList<ItemList> creditList = new ArrayList<>();
+    private ArrayList<ItemList> allList = new ArrayList<>();
+
+    //recyclerview for debit
+    private RecyclerView debitRecyclerView;
+    private debitListAdapter debitAdapter;
+
+    //recyclerview for credit
+    private RecyclerView creditRecyclerView;
+    private creditListAdapter creditAdapter;
+
+    //recyclerview for all list
+    private RecyclerView allRecyclerView;
+    private ConcatAdapter allAdapter;
+
+    private TextView debitAmount;
+    private TextView creditAmount;
+    private TextView savingsAmount;
+
+    static View globalView;
+    static View itemEditDialogView;
+
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -102,14 +126,42 @@ public class HomeFragment extends Fragment {
         PowerSpinnerView powerSpinner = view.findViewById(R.id.power_spinner);
         FloatingActionButton addItemFAB = view.findViewById(R.id.add_item_fab);
         ImageView editButton = view.findViewById(R.id.edit_item);
+        globalView = view;
 
-        mRecyclerView1 = view.findViewById(R.id.main_list_recyclerview);
-        mAdapter = new customListAdapter(mArrayList,this);
+        debitRecyclerView = view.findViewById(R.id.debit_list_recyclerview);
+        debitAdapter = new debitListAdapter(debitList,this);
 
-        mRecyclerView1.setAdapter(mAdapter);
-        mRecyclerView1.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        mRecyclerView1.setItemAnimator( new DefaultItemAnimator());
-        mRecyclerView1.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        creditRecyclerView = view.findViewById(R.id.credit_list_recyclerview);
+        creditAdapter = new creditListAdapter(creditList,this);
+
+        allRecyclerView = view.findViewById(R.id.all_list_recyclerview);
+        allAdapter = new ConcatAdapter(debitAdapter, creditAdapter);
+
+        debitRecyclerView.setAdapter(debitAdapter);
+        debitRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        debitRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        debitRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+
+        creditRecyclerView.setAdapter(creditAdapter);
+        creditRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        creditRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        creditRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+
+        allRecyclerView.setAdapter(allAdapter);
+        allRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        allRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        allRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+
+        debitAmount = view.findViewById(R.id.debit_amount);
+        debitAmount.setText("$" + getTotalDebitAmount());
+
+        creditAmount = view.findViewById(R.id.credit_amount);
+        creditAmount.setText("$" + getTotalCreditAmount());
+
+        savingsAmount = view.findViewById(R.id.savings_amount);
+        savingsAmount.setText("$" + getSavings());
+
+
         if(powerSpinner !=null) {
             powerSpinner.selectItemByIndex(0);
             Log.e("powerspinner", " set");
@@ -117,22 +169,51 @@ public class HomeFragment extends Fragment {
         else {
             Log.e("powerspinner", "not set");
         }
+        assert powerSpinner != null;
+        powerSpinner.setOnSpinnerItemSelectedListener((OnSpinnerItemSelectedListener<String>) (oldIndex, oldItem, newIndex, newItem) -> {
+            Log.d("PowerSPinner", "Selected "+newItem+" "+newIndex);
+            if(newItem.equalsIgnoreCase("Debit"))
+            {
+                setDebit();
+                debitRecyclerView.setVisibility(View.VISIBLE);
+                creditRecyclerView.setVisibility(View.GONE);
+                allRecyclerView.setVisibility(View.GONE);
+
+            }
+            else if(newItem.equalsIgnoreCase("Credit"))
+            {
+                setCredit();
+                debitRecyclerView.setVisibility(View.GONE);
+                creditRecyclerView.setVisibility(View.VISIBLE);
+                allRecyclerView.setVisibility(View.GONE);
+            }
+            else if(newItem.equalsIgnoreCase("All"))
+            {
+                setAll();
+                debitRecyclerView.setVisibility(View.GONE);
+                creditRecyclerView.setVisibility(View.GONE);
+                allRecyclerView.setVisibility(View.VISIBLE);
+            }
+        }
+        );
 
         addItemFAB.setOnClickListener(v->{
-            ShowItemCreationDialog();
+            ShowItemCreationDialog(view);
         });
-        if(editButton!=null){
-        editButton.setOnClickListener(v->{
-            ShowItemEditDialog();
-        });
-        }
 
     }
-    public void ShowItemCreationDialog(){
+
+    public void ShowItemCreationDialog(View view){
         final AlertDialog.Builder alert = new AlertDialog.Builder(getContext(),R.style.MyAlertTheme);
         View mView = getLayoutInflater().inflate(R.layout.item_entry_dialog,null);
+        itemEditDialogView = mView;
         Button btn_cancel = (Button)mView.findViewById(R.id.cancel_button);
         Button btn_okay = (Button)mView.findViewById(R.id.create_item_button);
+        RadioGroup debitCreditRadioGroup = mView.findViewById(R.id.debit_credit_radiogroup);
+        RadioButton creditRadio = mView.findViewById(R.id.credit_radio_button);
+        creditRadio.setChecked(true);
+        PowerSpinnerView powerSpinner = view.findViewById(R.id.power_spinner);
+
 
         final EditText itemNameEditText = mView.findViewById(R.id.item_name_edittext);
         final EditText itemAmountEditText = mView.findViewById(R.id.item_amount_edittext);
@@ -145,6 +226,7 @@ public class HomeFragment extends Fragment {
             boolean itemNameError = false;
             boolean itemAmountError = false;
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 Log.d("Dialog", "OK pressed");
@@ -173,39 +255,89 @@ public class HomeFragment extends Fragment {
 
 
                 }
-//                ItemList.addCreditItem(itemName,itemAmount);
                 if(!itemAmountError && !itemNameError) {
-                    ItemList credit = null;
-                    credit = new ItemList(itemName, itemAmount);
-                    mArrayList.add(credit);
-                    mAdapter.notifyDataSetChanged();
-                    alertDialog.dismiss();
-//                updateUI();
+                    switch(debitCreditRadioGroup.getCheckedRadioButtonId()){
+                        case R.id.credit_radio_button:
+                            ItemList credit = null;
+                            credit = new ItemList(itemName, itemAmount);
+                            creditList.add(credit);
+                            powerSpinner.selectItemByIndex(1);
+                            allList.add(credit);
+                            creditAdapter.notifyDataSetChanged();
+                            allAdapter.notifyDataSetChanged();
+
+                            setTotalCredit((getTotalCreditAmount()+itemAmount));
+
+                            creditAmount = view.findViewById(R.id.credit_amount);
+                            creditAmount.setText("$" + (getTotalCreditAmount()));
+
+                            savingsAmount = view.findViewById(R.id.savings_amount);
+                            savingsAmount.setText("$" + (getSavings()));
+                            alertDialog.dismiss();
+                            break;
+
+                        case R.id.debit_radio_button:
+                            ItemList debit = null;
+                            debit = new ItemList(itemName, itemAmount);
+                            debitList.add(debit);
+                            powerSpinner.selectItemByIndex(0);
+                            allList.add(debit);
+                            debitAdapter.notifyDataSetChanged();
+                            allAdapter.notifyDataSetChanged();
+
+                            setTotalDebit((getTotalDebitAmount()+itemAmount));
+
+                            debitAmount = view.findViewById(R.id.debit_amount);
+                            debitAmount.setText("$" + (getTotalDebitAmount()));
+
+                            savingsAmount = view.findViewById(R.id.savings_amount);
+                            savingsAmount.setText("$" +(getSavings()));
+
+                            alertDialog.dismiss();
+                            break;
+                    }
+
                 }
             }
         });
         alertDialog.show();
     }
-    public void ShowItemEditDialog(){
-        View mView = getLayoutInflater().inflate(R.layout.item_entry_dialog,null);
-        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext(),R.style.MyAlertTheme);
-        alert.setView(mView);
-        Button btn_cancel = mView.findViewById(R.id.cancel_button);
-        Button btn_okay = mView.findViewById(R.id.create_item_button);
 
+    @SuppressLint("SetTextI18n")
+    public static void updateDebit(){
 
+        TextView debitAmount;
+        TextView savingsAmount;
+        debitAmount = globalView.findViewById(R.id.debit_amount);
+        debitAmount.setText("$" + (getTotalDebitAmount()));
 
-        btn_okay.setText("Save");
-        alert.setView(mView);
-        final AlertDialog alertDialog = alert.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
-        btn_okay.setOnClickListener(v -> {
-            Log.d("Dialog", "OK pressed");
-
-            alertDialog.dismiss();
-        });
-        alertDialog.show();
+        savingsAmount = globalView.findViewById(R.id.savings_amount);
+        savingsAmount.setText("$" +(getSavings()));
     }
+    @SuppressLint("SetTextI18n")
+    public static void updatecredit(){
+
+        TextView creditAmount;
+        TextView savingsAmount;
+        creditAmount = globalView.findViewById(R.id.credit_amount);
+        creditAmount.setText("$" + (getTotalCreditAmount()));
+
+        savingsAmount = globalView.findViewById(R.id.savings_amount);
+        savingsAmount.setText("$" +(getSavings()));
+    }
+    public static void setcreditChecked(){
+        RadioGroup debitCreditRadioGroup = itemEditDialogView.findViewById(R.id.debit_credit_radiogroup);
+        RadioButton creditRadio = itemEditDialogView.findViewById(R.id.credit_radio_button);
+        creditRadio.setChecked(true);
+    }
+
+    public static void setCheckedDebit(){
+        RadioGroup debitCreditRadioGroup = itemEditDialogView.findViewById(R.id.debit_credit_radiogroup);
+        RadioButton debitRadio = itemEditDialogView.findViewById(R.id.debit_radio_button);
+        debitRadio.setChecked(true);
+    }
+
+
+
 
 }

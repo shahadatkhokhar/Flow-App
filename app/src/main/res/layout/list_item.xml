@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
@@ -28,11 +28,19 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_baseline_delete_outline_24" />
 
+        <ImageButton
+            android:id="@+id/item_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:backgroundTint="#00E1B6B6"
+            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_up_24" />
+
         <TextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:paddingLeft="10dp"
             android:text="Stationaries" />
 
@@ -42,13 +50,13 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="$20" />
+            android:text="$ 206333" />
 
         <ImageView
             android:id="@+id/edit_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3.5"
+            android:layout_weight="2.9"
             app:srcCompat="@drawable/ic_pen" />
     </LinearLayout>
 
