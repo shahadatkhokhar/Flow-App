@@ -32,12 +32,13 @@
                 android:textSize="40sp" />
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/home_profile_image"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                app:srcCompat="@drawable/picsart_03_28_06_11_49" />
+                app:srcCompat="@drawable/ic_baseline_account_circle_24" />
 
         </LinearLayout>
 

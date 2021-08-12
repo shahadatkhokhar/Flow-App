@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.expenses.flow.GlobalContent;
+import com.expenses.flow.GlobalDBContents;
 import com.expenses.flow.HomeFragment;
 import com.expenses.flow.ItemList;
 import com.expenses.flow.R;
@@ -109,6 +110,8 @@ public class creditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     // Show the removed item label`enter code here`
                     Toast.makeText(mcontext, "Deleted " + itemLabel, Toast.LENGTH_SHORT).show();
                     HomeFragment.updatecredit();
+                    GlobalDBContents.updateCreditListInDb(GlobalContent.getUserEmail(),creditList);
+
                 });
                 builder.setNegativeButton(R.string.no, (dialog, id) -> {
                     // User cancelled the dialog

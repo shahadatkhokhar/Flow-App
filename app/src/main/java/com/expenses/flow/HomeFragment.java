@@ -2,18 +2,6 @@ package com.expenses.flow;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ConcatAdapter;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +13,21 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.expenses.flow.RecyclerViewList.allListAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ConcatAdapter;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+
 import com.expenses.flow.RecyclerViewList.creditListAdapter;
 import com.expenses.flow.RecyclerViewList.debitListAdapter;
+import com.expenses.flow.database.UserDetails;
+import com.expenses.flow.database.UserDetailsDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.skydoves.powerspinner.PowerSpinnerView;
@@ -36,7 +36,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static com.expenses.flow.GlobalContent.*;
+import static com.expenses.flow.GlobalContent.getSavings;
+import static com.expenses.flow.GlobalContent.getTotalCreditAmount;
+import static com.expenses.flow.GlobalContent.getTotalDebitAmount;
+import static com.expenses.flow.GlobalContent.setAll;
+import static com.expenses.flow.GlobalContent.setCredit;
+import static com.expenses.flow.GlobalContent.setDebit;
+import static com.expenses.flow.GlobalContent.setDebitList;
+import static com.expenses.flow.GlobalContent.setTotalCredit;
+import static com.expenses.flow.GlobalContent.setTotalDebit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,33 +58,31 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final ArrayList<ItemList> allList = new ArrayList<>();
+    static View globalView;
+    static View itemEditDialogView;
+    static UserDetails userDetails;
+    static UserDetailsDB db;
+    private static ArrayList<ItemList> debitList = new ArrayList<>();
+    private static ArrayList<ItemList> creditList = new ArrayList<>();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private ArrayList<ItemList> debitList = new ArrayList<>();
-    private ArrayList<ItemList> creditList = new ArrayList<>();
-    private ArrayList<ItemList> allList = new ArrayList<>();
-
     //recyclerview for debit
     private RecyclerView debitRecyclerView;
     private debitListAdapter debitAdapter;
-
     //recyclerview for credit
     private RecyclerView creditRecyclerView;
     private creditListAdapter creditAdapter;
-
     //recyclerview for all list
     private RecyclerView allRecyclerView;
     private ConcatAdapter allAdapter;
-
     private TextView debitAmount;
     private TextView creditAmount;
     private TextView savingsAmount;
+    private ImageView profileImage;
 
-    static View globalView;
-    static View itemEditDialogView;
+    static int flag=0;
 
 
     public HomeFragment() {
@@ -101,6 +107,8 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +121,11 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -120,6 +133,7 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -128,28 +142,34 @@ public class HomeFragment extends Fragment {
         ImageView editButton = view.findViewById(R.id.edit_item);
         globalView = view;
 
+//        GlobalContent.setUserEmail("Khokharshahadat@gmail.com");
+//        GlobalContent.setUserName("Shahadat Khokhar");
+
+        profileImage = view.findViewById(R.id.home_profile_image);
+        profileImage.setImageBitmap(GlobalContent.getProfileImage());
+
         debitRecyclerView = view.findViewById(R.id.debit_list_recyclerview);
-        debitAdapter = new debitListAdapter(debitList,this);
+        debitAdapter = new debitListAdapter(debitList, this);
 
         creditRecyclerView = view.findViewById(R.id.credit_list_recyclerview);
-        creditAdapter = new creditListAdapter(creditList,this);
+        creditAdapter = new creditListAdapter(creditList, this);
 
         allRecyclerView = view.findViewById(R.id.all_list_recyclerview);
         allAdapter = new ConcatAdapter(debitAdapter, creditAdapter);
 
         debitRecyclerView.setAdapter(debitAdapter);
         debitRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        debitRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        debitRecyclerView.setItemAnimator(new DefaultItemAnimator());
         debitRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
         creditRecyclerView.setAdapter(creditAdapter);
         creditRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        creditRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        creditRecyclerView.setItemAnimator(new DefaultItemAnimator());
         creditRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
         allRecyclerView.setAdapter(allAdapter);
         allRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        allRecyclerView.setItemAnimator( new DefaultItemAnimator());
+        allRecyclerView.setItemAnimator(new DefaultItemAnimator());
         allRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
         debitAmount = view.findViewById(R.id.debit_amount);
@@ -161,54 +181,85 @@ public class HomeFragment extends Fragment {
         savingsAmount = view.findViewById(R.id.savings_amount);
         savingsAmount.setText("$" + getSavings());
 
+        if(flag==0){
+//            db = Room.databaseBuilder(getActivity().getApplicationContext(),
+//                    UserDetailsDB.class, "User1").build();
 
-        if(powerSpinner !=null) {
+
+//            new Thread(() -> {
+//                try {
+//                    GlobalDBContents.insertInDB();
+//                    Log.d("Success", "data written");
+//                } catch (Exception e) {
+//                    Log.e("Exception", e + "");
+//
+//                    GlobalDBContents.readFromDB(GlobalContent.getUserEmail());
+//
+////                    debitList.addAll(GlobalContent.getDebitList());
+////                    creditList.addAll(GlobalContent.getCreditList());
+//
+//                    creditAdapter.notifyDataSetChanged();
+//                    debitAdapter.notifyDataSetChanged();
+//
+//                    Log.d("creditList", userDetails.CreditList + "");
+//                    Log.d("debitList", userDetails.DebitList + "");
+//
+//                    updateDebit();
+//                    updatecredit();
+//
+//                    debitRecyclerView.setVisibility(View.VISIBLE);
+//                    creditRecyclerView.setVisibility(View.GONE);
+//                    allRecyclerView.setVisibility(View.GONE);
+//
+//                    Log.d("Success", "data reading");
+//                }
+//            }).start();
+        }
+
+        GlobalDBContents.readWriteTest(GlobalContent.getUserEmail());
+        if (powerSpinner != null) {
             powerSpinner.selectItemByIndex(0);
             Log.e("powerspinner", " set");
-        }
-        else {
+        } else {
             Log.e("powerspinner", "not set");
         }
         assert powerSpinner != null;
         powerSpinner.setOnSpinnerItemSelectedListener((OnSpinnerItemSelectedListener<String>) (oldIndex, oldItem, newIndex, newItem) -> {
-            Log.d("PowerSPinner", "Selected "+newItem+" "+newIndex);
-            if(newItem.equalsIgnoreCase("Debit"))
-            {
-                setDebit();
-                debitRecyclerView.setVisibility(View.VISIBLE);
-                creditRecyclerView.setVisibility(View.GONE);
-                allRecyclerView.setVisibility(View.GONE);
+                    Log.d("PowerSPinner", "Selected " + newItem + " " + newIndex);
+                    if (newItem.equalsIgnoreCase("Debit")) {
+                        setDebit();
+                        debitRecyclerView.setVisibility(View.VISIBLE);
+                        creditRecyclerView.setVisibility(View.GONE);
+                        allRecyclerView.setVisibility(View.GONE);
 
-            }
-            else if(newItem.equalsIgnoreCase("Credit"))
-            {
-                setCredit();
-                debitRecyclerView.setVisibility(View.GONE);
-                creditRecyclerView.setVisibility(View.VISIBLE);
-                allRecyclerView.setVisibility(View.GONE);
-            }
-            else if(newItem.equalsIgnoreCase("All"))
-            {
-                setAll();
-                debitRecyclerView.setVisibility(View.GONE);
-                creditRecyclerView.setVisibility(View.GONE);
-                allRecyclerView.setVisibility(View.VISIBLE);
-            }
-        }
+                    } else if (newItem.equalsIgnoreCase("Credit")) {
+                        setCredit();
+                        debitRecyclerView.setVisibility(View.GONE);
+                        creditRecyclerView.setVisibility(View.VISIBLE);
+                        allRecyclerView.setVisibility(View.GONE);
+                    } else if (newItem.equalsIgnoreCase("All")) {
+                        setAll();
+                        debitRecyclerView.setVisibility(View.GONE);
+                        creditRecyclerView.setVisibility(View.GONE);
+                        allRecyclerView.setVisibility(View.VISIBLE);
+                    }
+                }
         );
 
-        addItemFAB.setOnClickListener(v->{
+        addItemFAB.setOnClickListener(v -> {
             ShowItemCreationDialog(view);
         });
 
     }
 
-    public void ShowItemCreationDialog(View view){
-        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext(),R.style.MyAlertTheme);
-        View mView = getLayoutInflater().inflate(R.layout.item_entry_dialog,null);
+
+
+    public void ShowItemCreationDialog(View view) {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(getContext(), R.style.MyAlertTheme);
+        View mView = getLayoutInflater().inflate(R.layout.item_entry_dialog, null);
         itemEditDialogView = mView;
-        Button btn_cancel = (Button)mView.findViewById(R.id.cancel_button);
-        Button btn_okay = (Button)mView.findViewById(R.id.create_item_button);
+        Button btn_cancel = (Button) mView.findViewById(R.id.cancel_button);
+        Button btn_okay = (Button) mView.findViewById(R.id.create_item_button);
         RadioGroup debitCreditRadioGroup = mView.findViewById(R.id.debit_credit_radiogroup);
         RadioButton creditRadio = mView.findViewById(R.id.credit_radio_button);
         creditRadio.setChecked(true);
@@ -226,27 +277,25 @@ public class HomeFragment extends Fragment {
             boolean itemNameError = false;
             boolean itemAmountError = false;
 
-            @SuppressLint("SetTextI18n")
+            @SuppressLint({"SetTextI18n", "NotifyDataSetChanged", "NonConstantResourceId"})
             @Override
             public void onClick(View v) {
                 Log.d("Dialog", "OK pressed");
                 String itemName = itemNameEditText.getText().toString();
-                if(itemName!=null && itemName.length()!=0){
+                if (itemName != null && itemName.length() != 0) {
                     Log.d("itemName", itemName);
                     itemNameError = false;
-                }
-                else{
+                } else {
                     Log.e("itemName", "Null");
                     itemNameEditText.setError("Enter Item Name");
                     itemNameError = true;
                 }
                 String itemAmountString = itemAmountEditText.getText().toString().trim();
                 int itemAmount;
-                if(!itemAmountString.equalsIgnoreCase("")){
-                     itemAmount = Integer.parseInt(itemAmountString);
+                if (!itemAmountString.equalsIgnoreCase("")) {
+                    itemAmount = Integer.parseInt(itemAmountString);
                     itemAmountError = false;
-                }
-                else{
+                } else {
                     itemAmount = 0;
                     Log.e("Item amount", "null");
                     itemAmountEditText.setError("Enter Item Amount");
@@ -255,8 +304,8 @@ public class HomeFragment extends Fragment {
 
 
                 }
-                if(!itemAmountError && !itemNameError) {
-                    switch(debitCreditRadioGroup.getCheckedRadioButtonId()){
+                if (!itemAmountError && !itemNameError) {
+                    switch (debitCreditRadioGroup.getCheckedRadioButtonId()) {
                         case R.id.credit_radio_button:
                             ItemList credit = null;
                             credit = new ItemList(itemName, itemAmount);
@@ -266,7 +315,7 @@ public class HomeFragment extends Fragment {
                             creditAdapter.notifyDataSetChanged();
                             allAdapter.notifyDataSetChanged();
 
-                            setTotalCredit((getTotalCreditAmount()+itemAmount));
+                            setTotalCredit((getTotalCreditAmount() + itemAmount));
 
                             creditAmount = view.findViewById(R.id.credit_amount);
                             creditAmount.setText("$" + (getTotalCreditAmount()));
@@ -274,6 +323,7 @@ public class HomeFragment extends Fragment {
                             savingsAmount = view.findViewById(R.id.savings_amount);
                             savingsAmount.setText("$" + (getSavings()));
                             alertDialog.dismiss();
+                            GlobalDBContents.updateCreditListInDb(GlobalContent.getUserEmail(), creditList);
                             break;
 
                         case R.id.debit_radio_button:
@@ -285,15 +335,17 @@ public class HomeFragment extends Fragment {
                             debitAdapter.notifyDataSetChanged();
                             allAdapter.notifyDataSetChanged();
 
-                            setTotalDebit((getTotalDebitAmount()+itemAmount));
+                            setTotalDebit((getTotalDebitAmount() + itemAmount));
 
                             debitAmount = view.findViewById(R.id.debit_amount);
                             debitAmount.setText("$" + (getTotalDebitAmount()));
 
                             savingsAmount = view.findViewById(R.id.savings_amount);
-                            savingsAmount.setText("$" +(getSavings()));
+                            savingsAmount.setText("$" + (getSavings()));
 
                             alertDialog.dismiss();
+                            GlobalDBContents.updateDebitListInDb(GlobalContent.getUserEmail(),debitList);
+
                             break;
                     }
 
@@ -303,8 +355,28 @@ public class HomeFragment extends Fragment {
         alertDialog.show();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("paused","fragment paused");
+        flag=1;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        debitRecyclerView = getView().findViewById(R.id.debit_list_recyclerview);
+
+        creditRecyclerView = getView().findViewById(R.id.credit_list_recyclerview);
+
+        debitRecyclerView.setVisibility(View.VISIBLE);
+        creditRecyclerView.setVisibility(View.GONE);
+        allRecyclerView.setVisibility(View.GONE);
+    }
+
     @SuppressLint("SetTextI18n")
-    public static void updateDebit(){
+    public static void updateDebit() {
 
         TextView debitAmount;
         TextView savingsAmount;
@@ -312,10 +384,11 @@ public class HomeFragment extends Fragment {
         debitAmount.setText("$" + (getTotalDebitAmount()));
 
         savingsAmount = globalView.findViewById(R.id.savings_amount);
-        savingsAmount.setText("$" +(getSavings()));
+        savingsAmount.setText("$" + (getSavings()));
     }
+
     @SuppressLint("SetTextI18n")
-    public static void updatecredit(){
+    public static void updatecredit() {
 
         TextView creditAmount;
         TextView savingsAmount;
@@ -323,19 +396,10 @@ public class HomeFragment extends Fragment {
         creditAmount.setText("$" + (getTotalCreditAmount()));
 
         savingsAmount = globalView.findViewById(R.id.savings_amount);
-        savingsAmount.setText("$" +(getSavings()));
-    }
-    public static void setcreditChecked(){
-        RadioGroup debitCreditRadioGroup = itemEditDialogView.findViewById(R.id.debit_credit_radiogroup);
-        RadioButton creditRadio = itemEditDialogView.findViewById(R.id.credit_radio_button);
-        creditRadio.setChecked(true);
+        savingsAmount.setText("$" + (getSavings()));
     }
 
-    public static void setCheckedDebit(){
-        RadioGroup debitCreditRadioGroup = itemEditDialogView.findViewById(R.id.debit_credit_radiogroup);
-        RadioButton debitRadio = itemEditDialogView.findViewById(R.id.debit_radio_button);
-        debitRadio.setChecked(true);
-    }
+
 
 
 

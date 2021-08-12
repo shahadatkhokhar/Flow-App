@@ -19,23 +19,24 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:gravity="center"
-            android:text="FLOW"
+            android:text='@string/app_name'
             android:textAllCaps="true"
             android:textColor="#EF5455"
             android:textSize="85sp"
             android:textStyle="bold|italic" />
 
         <EditText
-            android:id="@+id/name_text_input"
+            android:id="@+id/login_email_text_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/round_border"
             android:ems="10"
-            android:hint="Email"
+            android:hint="@string/email_placeholder"
             android:inputType="textEmailAddress"
             android:maxHeight="12dp"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/password_text_input"
@@ -49,7 +50,8 @@
             android:inputType="textPassword"
             android:maxHeight="12dp"
             android:padding="15dp"
-            android:password="true" />
+            android:password="true"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/login_button"
@@ -59,14 +61,16 @@
             android:background="@drawable/round_button_border"
             android:minWidth="150dp"
             android:padding="15dp"
-            android:text="login" />
+            android:text="@string/send_otp"
+            android:visibility="gone" />
 
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textView3"
@@ -89,23 +93,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="or continue with"
-            android:textSize="20dp" />
+            android:text="Continue with"
+            android:textSize="20dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageButton
+            <LinearLayout
                 android:id="@+id/google_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="0"
-                android:background="@drawable/round_button_border"
-                app:srcCompat="@drawable/google_2_" />
+                android:background="@drawable/round_border"
+                android:elevation="10dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/round_button_border"
+                    app:srcCompat="@drawable/google_2_" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="0"
+                    android:text="Sign in with Google"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/github_button"
@@ -115,6 +141,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="0"
                 android:background="@drawable/round_github_bg"
+                android:visibility="gone"
                 app:srcCompat="@drawable/github_mark_32px" />
         </LinearLayout>
 
