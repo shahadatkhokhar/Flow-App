@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
     private TextView creditAmount;
     private TextView savingsAmount;
     private ImageView profileImage;
-
+    PowerSpinnerView powerSpinner;
     static int flag=0;
 
 
@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        PowerSpinnerView powerSpinner = view.findViewById(R.id.power_spinner);
+        powerSpinner = view.findViewById(R.id.power_spinner);
         FloatingActionButton addItemFAB = view.findViewById(R.id.add_item_fab);
         ImageView editButton = view.findViewById(R.id.edit_item);
         globalView = view;
@@ -247,7 +247,7 @@ public class HomeFragment extends Fragment {
         RadioGroup debitCreditRadioGroup = mView.findViewById(R.id.debit_credit_radiogroup);
         RadioButton creditRadio = mView.findViewById(R.id.credit_radio_button);
         creditRadio.setChecked(true);
-        PowerSpinnerView powerSpinner = view.findViewById(R.id.power_spinner);
+        powerSpinner = view.findViewById(R.id.power_spinner);
 
 
         final EditText itemNameEditText = mView.findViewById(R.id.item_name_edittext);
@@ -344,6 +344,7 @@ public class HomeFragment extends Fragment {
         super.onPause();
         Log.d("paused","fragment paused");
         flag=1;
+        powerSpinner.dismiss();
     }
 
     @Override

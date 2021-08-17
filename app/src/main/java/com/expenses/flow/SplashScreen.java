@@ -172,6 +172,12 @@ public class SplashScreen extends AppCompatActivity {
                     }else {
                         GlobalContent.setTotalCredit(0L);
                     }
+
+                    if(document.get("TotalDebit") != null) {
+                        GlobalContent.setTotalDebit((Long) document.get("TotalDebit"));
+                    }else {
+                        GlobalContent.setTotalDebit(0L);
+                    }
                     String profilePhotoUrl = (String) document.get("ProfileImage");
                     Bitmap[] image = {null};
                     Thread t= new Thread(() -> {
