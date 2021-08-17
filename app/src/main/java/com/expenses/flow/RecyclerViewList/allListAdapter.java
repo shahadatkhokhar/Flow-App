@@ -86,7 +86,7 @@ public class allListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public void populate(ItemList item, int position) {
             name.setText(item.getItemName());
-            amount.setText("$ " + item.getItemAmount());
+            amount.setText("₹ " + item.getItemAmount());
             if(GlobalContent.getDropdownValue()==1){
                 itemIndicator.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
             }

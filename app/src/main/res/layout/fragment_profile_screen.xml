@@ -52,8 +52,39 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="5dp"
+                android:background="@drawable/profile_photo_border"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
                 app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+
+            <LinearLayout
+                android:id="@+id/image_uploading_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:maxWidth="30dp"
+                    android:maxHeight="30dp"
+                    android:minWidth="30dp"
+                    android:minHeight="30dp" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="Uploading" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/profile_picture_update_button"
@@ -77,8 +108,9 @@
                 android:gravity="center_horizontal"
                 android:padding="10dp"
                 android:text="TextView"
+                android:textAllCaps="true"
                 android:textCursorDrawable="@null"
-                android:textSize="20sp"
+                android:textSize="25dp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -119,7 +151,18 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="20dp"
                 android:text="Change Password"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp"
+                android:text="Logout"
+                android:textColor="@color/white"
+                android:visibility="visible" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

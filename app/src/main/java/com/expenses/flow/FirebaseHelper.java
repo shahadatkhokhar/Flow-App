@@ -3,114 +3,43 @@ package com.expenses.flow;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class SplashScreen extends AppCompatActivity {
+public class FirebaseHelper {
+    static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.hide();
-        }
-
-
-
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        Intent intent;
-        Handler handler = new Handler();
-//        GlobalDBContents.initDB(this);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        int delayDuration=2000;
-
-        if (currentUser == null) {
-            intent = new Intent(this, LoginScreen.class);
-            delayDuration=1000;
-            Runnable r = () -> {
-                startActivity(intent);
-                finish();
-            };
-
-            handler.postDelayed(r, delayDuration);
-        } else {
-            updateGlobalContents(currentUser);
-            intent = new Intent(this, MainActivity.class);
-
-        }
-//        intent = new Intent(this, LoginScreen.class);
-//        Runnable r = () -> {
-//            startActivity(intent);
-//            finish();
-//        };
-//
-//        handler.postDelayed(r, delayDuration);
+    public static void updateCreditListInFirebase(ArrayList<ItemList> creditList){
+        db.collection("Users").document(GlobalContent.getUserEmail())
+                .update(
+                        "CreditList",creditList,
+                        "TotalCredit", GlobalContent.getTotalCreditAmount())
+                .addOnSuccessListener(documentReference -> Log.d("Success", "DocumentSnapshot creditList updated "))
+                .addOnFailureListener(e -> Log.w("Failure", "Error adding document", e));
     }
 
-
-    public void updateGlobalContents(FirebaseUser user) {
-        String userEmail = user.getEmail();
-        String userName = user.getDisplayName();
-//        String profilePictureUri = String.valueOf(user.getPhotoUrl());
-//        Bitmap[] image = {null};
-//        new Thread(() -> {
-//            try {
-//                URL url = new URL(profilePictureUri);
-//                image[0] = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//                if (image[0] != null) {
-//                    Log.d("Image", "Success");
-//                    GlobalContent.setProfileImage(image[0]);
-//
-//                } else {
-//                    Log.d("Image", "Failure");
-//
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-
-        GlobalContent.setUserName(userName);
-        GlobalContent.setUserEmail(userEmail);
-
-        readFromFirebase();
+    public static void updateDebitListInFirebase(ArrayList<ItemList> debitList){
+        db.collection("Users").document(GlobalContent.getUserEmail())
+                .update(
+                        "DebitList",debitList,
+                        "TotalDebit", GlobalContent.getTotalDebitAmount())
+                .addOnSuccessListener(documentReference -> Log.d("Success", "DocumentSnapshot creditList updated "))
+                .addOnFailureListener(e -> Log.w("Failure", "Error adding document", e));
     }
 
-//    public static void navigateToHomeScreen(){
-//        Handler handler = new Handler();
-//
-//        Intent intent = new Intent(this, LoginScreen.class);
-//        Runnable r = () -> {
-//            startActivity(intent);
-//            finish();
-//        };
-//
-//        handler.postDelayed(r, 2000);
-//    }
-
-    public void readFromFirebase(){
+    public static void readFromFirebase(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         DocumentReference docRef = db.collection("Users").document(GlobalContent.getUserEmail());
@@ -124,21 +53,21 @@ public class SplashScreen extends AppCompatActivity {
                     ArrayList<ItemList> tempDebitList = new ArrayList<>();
                     assert recievedDebitList != null;
                     if(!(recievedDebitList.isEmpty())){
-                    for(int counter=0;counter<recievedDebitList.size();counter++){
-                        HashMap<HashMap<String,String>,HashMap<String, Integer>> item = (HashMap<HashMap<String, String>, HashMap<String, Integer>>) recievedDebitList.get(counter);
-                        String itemName = String.valueOf(item.get("itemName"));
-                        String itemValue = String.valueOf(item.get("itemAmount"));
-                        Log.d("item", String.valueOf(item.get("itemName")+", "+ item.get("itemAmount")));
+                        for(int counter=0;counter<recievedDebitList.size();counter++){
+                            HashMap<HashMap<String,String>,HashMap<String, Integer>> item = (HashMap<HashMap<String, String>, HashMap<String, Integer>>) recievedDebitList.get(counter);
+                            String itemName = String.valueOf(item.get("itemName"));
+                            String itemValue = String.valueOf(item.get("itemAmount"));
+                            Log.d("item", String.valueOf(item.get("itemName")+", "+ item.get("itemAmount")));
 
-                        if(!itemName.equalsIgnoreCase("null")&&!itemValue.equalsIgnoreCase("null")) {
-                            ItemList debit = new ItemList(String.valueOf(item.get("itemName")), Integer.parseInt(String.valueOf(item.get("itemAmount"))));
-                            tempDebitList.add(debit);
+                            if(!itemName.equalsIgnoreCase("null")&&!itemValue.equalsIgnoreCase("null")) {
+                                ItemList debit = new ItemList(String.valueOf(item.get("itemName")), Integer.parseInt(String.valueOf(item.get("itemAmount"))));
+                                tempDebitList.add(debit);
+                            }
+                            else if(!String.valueOf(item.get("n")).equalsIgnoreCase("null") && !String.valueOf(item.get("o")).equalsIgnoreCase("null")){
+                                ItemList debit = new ItemList(String.valueOf(item.get("n")), Integer.parseInt(String.valueOf(item.get("o"))));
+                                tempDebitList.add(debit);
+                            }
                         }
-                        else if(!String.valueOf(item.get("n")).equalsIgnoreCase("null") && !String.valueOf(item.get("o")).equalsIgnoreCase("null")){
-                            ItemList debit = new ItemList(String.valueOf(item.get("n")), Integer.parseInt(String.valueOf(item.get("o"))));
-                            tempDebitList.add(debit);
-                        }
-                    }
                     }
                     GlobalContent.setDebitList(tempDebitList);
 
@@ -165,8 +94,6 @@ public class SplashScreen extends AppCompatActivity {
                     }
                     GlobalContent.setCreditList(tempCreditList);
 
-
-
                     if(document.get("TotalCredit") != null) {
                         GlobalContent.setTotalCredit((Long) document.get("TotalCredit"));
                     }else {
@@ -181,8 +108,6 @@ public class SplashScreen extends AppCompatActivity {
                             if (image[0] != null) {
                                 Log.d("Image", "Success");
                                 GlobalContent.setProfileImage(image[0]);
-                                startActivity(new Intent(this,MainActivity.class));
-                                finish();
                             } else {
                                 Log.d("Image", "Failure");
 

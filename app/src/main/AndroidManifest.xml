@@ -17,7 +17,6 @@
         <activity
             android:name=".DetailsEntryScreen"
             android:exported="true" />
-        <activity android:name=".OTPScreen" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

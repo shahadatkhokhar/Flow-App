@@ -18,8 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.expenses.flow.FirebaseHelper;
 import com.expenses.flow.GlobalContent;
-import com.expenses.flow.GlobalDBContents;
 import com.expenses.flow.HomeFragment;
 import com.expenses.flow.ItemList;
 import com.expenses.flow.R;
@@ -95,7 +95,7 @@ public class debitListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void populate(ItemList item, int position) {
             name.setText(item.getItemName());
-            amount.setText("$ " + item.getItemAmount());
+            amount.setText("₹ " + item.getItemAmount());
 //            GlobalContent.setTotalDebit(GlobalContent.getTotalDebitAmount()+item.getItemAmount());
 //            GlobalContent.addDebit(item.getItemAmount());
             itemIndicator.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
@@ -121,7 +121,7 @@ public class debitListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     // Show the removed item label`enter code here`
                     Toast.makeText(mcontext, "Deleted " + itemLabel, Toast.LENGTH_SHORT).show();
                     HomeFragment.updateDebit();
-                    GlobalDBContents.updateDebitListInDb(GlobalContent.getUserEmail(),debitList);
+                    FirebaseHelper.updateDebitListInFirebase(debitList);
 
                 });
                 builder.setNegativeButton(R.string.no, (dialog, id) -> {
@@ -195,6 +195,8 @@ public class debitListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             HomeFragment.updateDebit();
                             notifyItemChanged(position);
                             notifyDataSetChanged();
+                            FirebaseHelper.updateDebitListInFirebase(debitList);
+
                             alertDialog.dismiss();
                         }
                     }

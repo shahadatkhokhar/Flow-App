@@ -3,16 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/popup_border.xml" value="0.21458333333333332" />
+        <entry key="app/src/main/res/drawable/profile_photo_border.xml" value="0.21458333333333332" />
+        <entry key="app/src/main/res/drawable/round_border.xml" value="0.21458333333333332" />
+        <entry key="app/src/main/res/drawable/round_button_border.xml" value="0.21458333333333332" />
         <entry key="app/src/main/res/layout/activity_details_entry_screen.xml" value="0.35208333333333336" />
-        <entry key="app/src/main/res/layout/activity_login_screen.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/layout/activity_login_screen.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_otp_screen.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/activity_signup_screen.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/layout/fragment_about_screen.xml" value="0.2390625" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.35260416666666666" />
-        <entry key="app/src/main/res/layout/fragment_more.xml" value="0.15416666666666667" />
+        <entry key="app/src/main/res/layout/fragment_more.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_profile_screen.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/item_entry_dialog.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.21145833333333333" />
       </map>
     </option>
   </component>

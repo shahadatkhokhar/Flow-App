@@ -1,5 +1,14 @@
 package com.expenses.flow;
 
+import static com.expenses.flow.GlobalContent.getSavings;
+import static com.expenses.flow.GlobalContent.getTotalCreditAmount;
+import static com.expenses.flow.GlobalContent.getTotalDebitAmount;
+import static com.expenses.flow.GlobalContent.setAll;
+import static com.expenses.flow.GlobalContent.setCredit;
+import static com.expenses.flow.GlobalContent.setDebit;
+import static com.expenses.flow.GlobalContent.setTotalCredit;
+import static com.expenses.flow.GlobalContent.setTotalDebit;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,12 +31,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.expenses.flow.RecyclerViewList.creditListAdapter;
 import com.expenses.flow.RecyclerViewList.debitListAdapter;
-import com.expenses.flow.database.UserDetails;
-import com.expenses.flow.database.UserDetailsDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
 import com.skydoves.powerspinner.PowerSpinnerView;
@@ -35,16 +41,6 @@ import com.skydoves.powerspinner.PowerSpinnerView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-
-import static com.expenses.flow.GlobalContent.getSavings;
-import static com.expenses.flow.GlobalContent.getTotalCreditAmount;
-import static com.expenses.flow.GlobalContent.getTotalDebitAmount;
-import static com.expenses.flow.GlobalContent.setAll;
-import static com.expenses.flow.GlobalContent.setCredit;
-import static com.expenses.flow.GlobalContent.setDebit;
-import static com.expenses.flow.GlobalContent.setDebitList;
-import static com.expenses.flow.GlobalContent.setTotalCredit;
-import static com.expenses.flow.GlobalContent.setTotalDebit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,8 +57,6 @@ public class HomeFragment extends Fragment {
     private static final ArrayList<ItemList> allList = new ArrayList<>();
     static View globalView;
     static View itemEditDialogView;
-    static UserDetails userDetails;
-    static UserDetailsDB db;
     private static ArrayList<ItemList> debitList = new ArrayList<>();
     private static ArrayList<ItemList> creditList = new ArrayList<>();
     // TODO: Rename and change types of parameters
@@ -116,6 +110,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
 
 
     }
@@ -173,50 +168,39 @@ public class HomeFragment extends Fragment {
         allRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
         debitAmount = view.findViewById(R.id.debit_amount);
-        debitAmount.setText("$" + getTotalDebitAmount());
+        debitAmount.setText("₹" + getTotalDebitAmount());
 
         creditAmount = view.findViewById(R.id.credit_amount);
-        creditAmount.setText("$" + getTotalCreditAmount());
+        creditAmount.setText("₹" + getTotalCreditAmount());
 
         savingsAmount = view.findViewById(R.id.savings_amount);
-        savingsAmount.setText("$" + getSavings());
+        savingsAmount.setText("₹" + getSavings());
 
+        profileImage.setOnClickListener(v->{
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new ProfileScreen(),"Profile")
+                    .addToBackStack("Profile")
+                    .commit();
+        });
+
+//        GlobalDBContents.readWriteTest(GlobalContent.getUserEmail());
         if(flag==0){
-//            db = Room.databaseBuilder(getActivity().getApplicationContext(),
-//                    UserDetailsDB.class, "User1").build();
-
-
-//            new Thread(() -> {
-//                try {
-//                    GlobalDBContents.insertInDB();
-//                    Log.d("Success", "data written");
-//                } catch (Exception e) {
-//                    Log.e("Exception", e + "");
-//
-//                    GlobalDBContents.readFromDB(GlobalContent.getUserEmail());
-//
-////                    debitList.addAll(GlobalContent.getDebitList());
-////                    creditList.addAll(GlobalContent.getCreditList());
-//
-//                    creditAdapter.notifyDataSetChanged();
-//                    debitAdapter.notifyDataSetChanged();
-//
-//                    Log.d("creditList", userDetails.CreditList + "");
-//                    Log.d("debitList", userDetails.DebitList + "");
-//
-//                    updateDebit();
-//                    updatecredit();
-//
-//                    debitRecyclerView.setVisibility(View.VISIBLE);
-//                    creditRecyclerView.setVisibility(View.GONE);
-//                    allRecyclerView.setVisibility(View.GONE);
-//
-//                    Log.d("Success", "data reading");
-//                }
-//            }).start();
+            if(GlobalContent.getDebitList()!=null)
+            {
+                debitList.addAll(GlobalContent.getDebitList());
+                debitAdapter.notifyDataSetChanged();
+            }
+            if(GlobalContent.getCreditList()!=null)
+            {
+                creditList.addAll(GlobalContent.getCreditList());
+                creditAdapter.notifyDataSetChanged();
+            }
         }
+        debitAdapter.notifyDataSetChanged();
+        creditAdapter.notifyDataSetChanged();
 
-        GlobalDBContents.readWriteTest(GlobalContent.getUserEmail());
+
         if (powerSpinner != null) {
             powerSpinner.selectItemByIndex(0);
             Log.e("powerspinner", " set");
@@ -318,12 +302,12 @@ public class HomeFragment extends Fragment {
                             setTotalCredit((getTotalCreditAmount() + itemAmount));
 
                             creditAmount = view.findViewById(R.id.credit_amount);
-                            creditAmount.setText("$" + (getTotalCreditAmount()));
+                            creditAmount.setText("₹" + (getTotalCreditAmount()));
 
                             savingsAmount = view.findViewById(R.id.savings_amount);
-                            savingsAmount.setText("$" + (getSavings()));
+                            savingsAmount.setText("₹" + (getSavings()));
                             alertDialog.dismiss();
-                            GlobalDBContents.updateCreditListInDb(GlobalContent.getUserEmail(), creditList);
+                            FirebaseHelper.updateCreditListInFirebase(creditList);
                             break;
 
                         case R.id.debit_radio_button:
@@ -338,13 +322,13 @@ public class HomeFragment extends Fragment {
                             setTotalDebit((getTotalDebitAmount() + itemAmount));
 
                             debitAmount = view.findViewById(R.id.debit_amount);
-                            debitAmount.setText("$" + (getTotalDebitAmount()));
+                            debitAmount.setText("₹" + (getTotalDebitAmount()));
 
                             savingsAmount = view.findViewById(R.id.savings_amount);
-                            savingsAmount.setText("$" + (getSavings()));
+                            savingsAmount.setText("₹" + (getSavings()));
 
                             alertDialog.dismiss();
-                            GlobalDBContents.updateDebitListInDb(GlobalContent.getUserEmail(),debitList);
+                            FirebaseHelper.updateDebitListInFirebase(debitList);
 
                             break;
                     }
@@ -370,7 +354,11 @@ public class HomeFragment extends Fragment {
 
         creditRecyclerView = getView().findViewById(R.id.credit_list_recyclerview);
 
+        PowerSpinnerView powerSpinner = getView().findViewById(R.id.power_spinner);
+
         debitRecyclerView.setVisibility(View.VISIBLE);
+        powerSpinner.selectItemByIndex(0);
+
         creditRecyclerView.setVisibility(View.GONE);
         allRecyclerView.setVisibility(View.GONE);
     }
@@ -381,10 +369,10 @@ public class HomeFragment extends Fragment {
         TextView debitAmount;
         TextView savingsAmount;
         debitAmount = globalView.findViewById(R.id.debit_amount);
-        debitAmount.setText("$" + (getTotalDebitAmount()));
+        debitAmount.setText("₹" + (getTotalDebitAmount()));
 
         savingsAmount = globalView.findViewById(R.id.savings_amount);
-        savingsAmount.setText("$" + (getSavings()));
+        savingsAmount.setText("₹" + (getSavings()));
     }
 
     @SuppressLint("SetTextI18n")
@@ -393,15 +381,10 @@ public class HomeFragment extends Fragment {
         TextView creditAmount;
         TextView savingsAmount;
         creditAmount = globalView.findViewById(R.id.credit_amount);
-        creditAmount.setText("$" + (getTotalCreditAmount()));
+        creditAmount.setText("₹" + (getTotalCreditAmount()));
 
         savingsAmount = globalView.findViewById(R.id.savings_amount);
-        savingsAmount.setText("$" + (getSavings()));
+        savingsAmount.setText("₹" + (getSavings()));
     }
-
-
-
-
-
 
 }

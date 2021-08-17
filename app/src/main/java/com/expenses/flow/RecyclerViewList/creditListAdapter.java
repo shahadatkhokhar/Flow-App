@@ -18,8 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.expenses.flow.FirebaseHelper;
 import com.expenses.flow.GlobalContent;
-import com.expenses.flow.GlobalDBContents;
 import com.expenses.flow.HomeFragment;
 import com.expenses.flow.ItemList;
 import com.expenses.flow.R;
@@ -88,7 +88,7 @@ public class creditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void populate(ItemList item, int position) {
             name.setText(item.getItemName());
-            amount.setText("$ " + item.getItemAmount());
+            amount.setText("₹ " + item.getItemAmount());
 //            GlobalContent.setTotalCredit(GlobalContent.getTotalCreditAmount()+item.getItemAmount());
 //            GlobalContent.addCredit(item.getItemAmount());
             itemIndicator.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
@@ -110,7 +110,7 @@ public class creditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     // Show the removed item label`enter code here`
                     Toast.makeText(mcontext, "Deleted " + itemLabel, Toast.LENGTH_SHORT).show();
                     HomeFragment.updatecredit();
-                    GlobalDBContents.updateCreditListInDb(GlobalContent.getUserEmail(),creditList);
+                    FirebaseHelper.updateCreditListInFirebase(creditList);
 
                 });
                 builder.setNegativeButton(R.string.no, (dialog, id) -> {
@@ -185,6 +185,7 @@ public class creditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             HomeFragment.updatecredit();
                             notifyItemChanged(position);
                             notifyDataSetChanged();
+                            FirebaseHelper.updateCreditListInFirebase(creditList);
                             alertDialog.dismiss();
                         }
                     }

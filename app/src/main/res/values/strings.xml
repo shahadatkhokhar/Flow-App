@@ -10,12 +10,11 @@
     <string name="debit">Debit</string>
     <string name="credit">Credit</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="about_text">A minimalist Expense manager app. This app is created to make managing the flow of your money easy
     and hassle free. With simple and clean UI you can manage your money efficiently without any extra load.</string>
     <string name="about">About</string>
     <string name="for_any_queries_and_suggesions">For any queries and suggesions email us at: </string>
-    <string name="email">khokharshahadat@gmail.com</string>
+    <string name="email">flow.expensemanager@gmail.com</string>
     <string name="email_placeholder">Email</string>
     <string name="send_otp">Send OTP</string>
     <string name="enter_otp">Enter OTP</string>

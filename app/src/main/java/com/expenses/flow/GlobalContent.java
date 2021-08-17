@@ -1,39 +1,27 @@
 package com.expenses.flow;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 
-import androidx.room.Room;
-
-import com.expenses.flow.database.UserDetails;
-import com.expenses.flow.database.UserDetailsDB;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class GlobalContent {
     private static int DEBIT = 0;
     private static int CREDIT = 1;
     private static int ALL = 2;
-    static int totalDebitAmount=0;
-    static int totalCreditAmount=0;
+    static long totalDebitAmount=0;
+    static long totalCreditAmount=0;
 
     public static int dropdownValue = DEBIT;
 
-    public static boolean isUserRegistered = false;
-    public static boolean isSignUpcomplete = false;
+    public static boolean isNewUser = false;
 
     private static String userName;
     private static String userEmail;
     private static Bitmap profileImage;
+    private static String profileImageUrl;
 
     private static ArrayList<ItemList> creditList = new ArrayList<>();
     private static ArrayList<ItemList> debitList = new ArrayList<>();
-
-    static final UserDetailsDB[] db = new UserDetailsDB[1];
-
 
     public static String getUserName(){
         return userName;
@@ -70,23 +58,23 @@ public class GlobalContent {
         return dropdownValue;
     }
 
-    public static void setTotalDebit(int amount){
+    public static void setTotalDebit(Long amount){
         totalDebitAmount = amount;
     }
 
-    public static void setTotalCredit(int amount){
+    public static void setTotalCredit(long amount){
         totalCreditAmount = amount;
     }
 
-    public static int getTotalDebitAmount(){
+    public static long getTotalDebitAmount(){
         return totalDebitAmount;
     }
 
-    public static int getTotalCreditAmount(){
+    public static long getTotalCreditAmount(){
         return totalCreditAmount;
     }
 
-    public static int getSavings(){
+    public static long getSavings(){
         return totalCreditAmount-totalDebitAmount;
     }
 
@@ -118,6 +106,13 @@ public class GlobalContent {
 
     public static ArrayList<ItemList> getDebitList() {
         return debitList;
+    }
+
+    public static String getProfileImageURL(){
+        return profileImageUrl;
+    }
+    public static void setProfileImageUrl(String url){
+        profileImageUrl = url;
     }
 
 

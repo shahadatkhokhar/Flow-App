@@ -75,7 +75,7 @@ public class AboutScreen extends Fragment {
         TextView queryEmail = view.findViewById(R.id.query_email);
         queryEmail.setOnClickListener(v->{
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri data = Uri.parse("mailto:khokharshahadat@gmail.com?subject=" + Uri.encode("Query for Expense App") + "&body=" + Uri.encode("Hey there, I would like to know about : "));
+            Uri data = Uri.parse("mailto:flow.expensemanager@gmail.com?subject=" + Uri.encode("Query for Expense App") + "&body=" + Uri.encode("Hey there, I would like to know about : "));
             intent.setData(data);
             startActivity(intent);
         });

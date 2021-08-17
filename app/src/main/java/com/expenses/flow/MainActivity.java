@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.skydoves.powerspinner.PowerSpinnerView;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,36 +31,39 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 
     }
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+
+
+    private final BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             // By using switch we can easily get
             // the selected fragment
             // by using there id.
-            int flag =0;
+            int flag = 0;
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.money:
                     selectedFragment = new HomeFragment();
-                    flag =0;
+                    flag = 0;
                     break;
                 case R.id.more:
                     selectedFragment = new MoreFragment();
-                    flag=1;
+                    flag = 1;
                     break;
             }
             // It will help to replace the
             // one fragment to other.
-            if(flag ==1){
+            if (flag == 1) {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment, "tab")
                         .addToBackStack("tab")
                         .commit();
-            }
-            else{
+            } else {
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
+                assert selectedFragment != null;
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment)
@@ -65,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
-
-
-
-
             return true;
         }
     };
