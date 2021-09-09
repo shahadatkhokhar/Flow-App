@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,6 +66,7 @@ public class ProfileScreen extends Fragment {
     FirebaseStorage storage;
     LinearLayout imageUploadingIndicator;
     Button logoutButton;
+    EditText nameEdit;
 
     public ProfileScreen() {
         // Required empty public constructor
@@ -116,7 +118,7 @@ public class ProfileScreen extends Fragment {
 
         final int PICK_IMAGE = 1;
 
-        nameView = getView().findViewById(R.id.edit_profile_name);
+        nameView = requireView().findViewById(R.id.profile_name_display);
         nameView.setText(GlobalContent.getUserName());
         editProfileButton = getView().findViewById(R.id.profile_screen_edit_button);
         saveProfileButton = getView().findViewById(R.id.profile_save_button);
@@ -125,35 +127,12 @@ public class ProfileScreen extends Fragment {
         profilePicture = getView().findViewById(R.id.more_screen_image);
         imageUploadingIndicator = getView().findViewById(R.id.image_uploading_indicator);
         logoutButton = getView().findViewById(R.id.logout_button);
+        nameEdit = getView().findViewById(R.id.profile_name_edit);
         if(GlobalContent.getProfileImage()!=null){
             profilePicture.setImageBitmap(GlobalContent.getProfileImage());
         }
+        nameEdit.setText(GlobalContent.getUserName());
 
-        nameView.setCursorVisible(false);
-        nameView.setFocusable(false);
-
-//        nameView.setEnabled(false);
-        nameView.setClickable(false);
-        nameView.setFocusableInTouchMode(false);
-
-        final String[] newName = new String[1];
-
-        nameView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                newName[0] = s.toString();
-
-                Log.d("name",newName[0]);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
         profilePictureUpdateButton.setVisibility(View.GONE);
 
         profilePictureUpdateButton.setOnClickListener(image->{
@@ -166,37 +145,33 @@ public class ProfileScreen extends Fragment {
 
 
         editProfileButton.setOnClickListener(v->{
-            nameView.setBackground(getContext().getResources().getDrawable(R.drawable.round_edittext_profilescreen));
             saveProfileButton.setVisibility(View.VISIBLE);
             editProfileButton.setVisibility(View.GONE);
-            nameView.setCursorVisible(true);
-            nameView.setFocusable(true);
-//            nameView.setEnabled(true);
-            nameView.setClickable(true);
-            nameView.setFocusableInTouchMode(true);
+            nameView.setVisibility(View.GONE);
+            nameEdit.setVisibility(View.VISIBLE);
             profilePictureUpdateButton.setVisibility(View.VISIBLE);
 
         });
 
         saveProfileButton.setOnClickListener(v->{
-            nameView.setBackgroundColor(Color.parseColor("#ffffff"));
+            String newName = nameEdit.getText().toString();
 
-            if(newName[0]==null || newName[0].trim().equalsIgnoreCase("")){
+
+            if(newName.trim().equalsIgnoreCase("")){
                 GlobalContent.setUserName(GlobalContent.getUserName());
 
             }
             else{
-                GlobalContent.setUserName(newName[0]);
-                Log.d("newname",newName[0]+"");
+                GlobalContent.setUserName(newName);
+                Log.d("newname",newName+"");
+                nameView.setText(newName);
                 updateNameInFirebase();
             }
             saveProfileButton.setVisibility(View.GONE);
             editProfileButton.setVisibility(View.VISIBLE);
-            nameView.setCursorVisible(false);
-            nameView.setFocusable(false);
-            nameView.setClickable(false);
-            nameView.setFocusableInTouchMode(false);
             profilePictureUpdateButton.setVisibility(View.GONE);
+            nameView.setVisibility(View.VISIBLE);
+            nameEdit.setVisibility(View.GONE);
 
         });
 

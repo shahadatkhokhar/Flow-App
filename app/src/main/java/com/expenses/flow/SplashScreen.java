@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -92,7 +93,7 @@ public class SplashScreen extends AppCompatActivity {
 //            }
 //        }).start();
 
-        GlobalContent.setUserName(userName);
+//        GlobalContent.setUserName(userName);
         GlobalContent.setUserEmail(userEmail);
 
         readFromFirebase();
@@ -126,16 +127,18 @@ public class SplashScreen extends AppCompatActivity {
                     if(!(recievedDebitList.isEmpty())){
                     for(int counter=0;counter<recievedDebitList.size();counter++){
                         HashMap<HashMap<String,String>,HashMap<String, Integer>> item = (HashMap<HashMap<String, String>, HashMap<String, Integer>>) recievedDebitList.get(counter);
-                        String itemName = String.valueOf(item.get("itemName"));
-                        String itemValue = String.valueOf(item.get("itemAmount"));
-                        Log.d("item", String.valueOf(item.get("itemName")+", "+ item.get("itemAmount")));
 
-                        if(!itemName.equalsIgnoreCase("null")&&!itemValue.equalsIgnoreCase("null")) {
-                            ItemList debit = new ItemList(String.valueOf(item.get("itemName")), Integer.parseInt(String.valueOf(item.get("itemAmount"))));
-                            tempDebitList.add(debit);
-                        }
-                        else if(!String.valueOf(item.get("n")).equalsIgnoreCase("null") && !String.valueOf(item.get("o")).equalsIgnoreCase("null")){
-                            ItemList debit = new ItemList(String.valueOf(item.get("n")), Integer.parseInt(String.valueOf(item.get("o"))));
+                        String itemNameLabel = (String) item.keySet().toArray()[0];
+                        Log.d("itemnamelabel",itemNameLabel);
+                        String itemAmountLabel = (String) item.keySet().toArray()[1];
+                        Log.d("itemAmountLabel",itemAmountLabel);
+                        String itemName = String.valueOf(item.get(itemNameLabel));
+                        String itemAmount = String.valueOf(item.get(itemAmountLabel));
+
+                        Log.d("item", itemName + ", " + itemAmount);
+
+                        if (!itemName.equalsIgnoreCase("null") && !itemAmount.equalsIgnoreCase("null")) {
+                            ItemList debit = new ItemList(itemName, Integer.parseInt(itemAmount));
                             tempDebitList.add(debit);
                         }
                     }
@@ -148,17 +151,18 @@ public class SplashScreen extends AppCompatActivity {
                     if(!(recievedCreditList.isEmpty())) {
                         for (int counter = 0; counter < recievedCreditList.size(); counter++) {
                             HashMap<HashMap<String, String>, HashMap<String, Integer>> item = (HashMap<HashMap<String, String>, HashMap<String, Integer>>) recievedCreditList.get(counter);
-                            String itemName = String.valueOf(item.get("itemName"));
-                            String itemValue = String.valueOf(item.get("itemAmount"));
 
-                            Log.d("item", item.get("itemName") + ", " + item.get("itemAmount"));
+                            String itemNameLabel = (String) item.keySet().toArray()[0];
+                            Log.d("itemnamelabel",itemNameLabel);
+                            String itemAmountLabel = (String) item.keySet().toArray()[1];
+                            Log.d("itemAmountLAbel",itemAmountLabel);
+                            String itemName = String.valueOf(item.get(itemNameLabel));
+                            String itemAmount = String.valueOf(item.get(itemAmountLabel));
 
-                            if (!itemName.equalsIgnoreCase("null") && !itemValue.equalsIgnoreCase("null")) {
-                                ItemList credit = new ItemList(String.valueOf(item.get("itemName")), Integer.parseInt(String.valueOf(item.get("itemAmount"))));
-                                tempCreditList.add(credit);
-                            }
-                            else if(!String.valueOf(item.get("n")).equalsIgnoreCase("null") && !String.valueOf(item.get("o")).equalsIgnoreCase("null")){
-                                ItemList credit = new ItemList(String.valueOf(item.get("n")), Integer.parseInt(String.valueOf(item.get("o"))));
+                            Log.d("item", itemName + ", " + itemAmount);
+
+                            if (!itemName.equalsIgnoreCase("null") && !itemAmount.equalsIgnoreCase("null")) {
+                                ItemList credit = new ItemList(itemName, Integer.parseInt(itemAmount));
                                 tempCreditList.add(credit);
                             }
                         }
@@ -177,6 +181,9 @@ public class SplashScreen extends AppCompatActivity {
                         GlobalContent.setTotalDebit((Long) document.get("TotalDebit"));
                     }else {
                         GlobalContent.setTotalDebit(0L);
+                    }
+                    if(document.get("Name")!=null){
+                        GlobalContent.setUserName(document.get("Name").toString());
                     }
                     String profilePhotoUrl = (String) document.get("ProfileImage");
                     Bitmap[] image = {null};
@@ -206,6 +213,10 @@ public class SplashScreen extends AppCompatActivity {
 
                 } else {
                     Log.d("Read", "No such document");
+                    Toast.makeText(this,"User details not found                          ",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this,LoginScreen.class));
+//                    finish();
+
                 }
             } else {
                 Log.d("Read", "get failed with ", task.getException());
