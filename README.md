@@ -4,7 +4,7 @@
 
 Flow is a simple expense manager to monitor the flow of your money seamlessly
 
-[![Android ](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/BadgeAndroid.png)](https://play.google.com/store/apps/details?id=com.expense.flow])
+- [![Android ](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/BadgeAndroid.png)](https://play.google.com/store/apps/details?id=com.expense.flow])
 
 
 ![clay mockup](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/clay_mockup_home.png)
