@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "862933729768",
+    "project_id": "flow-app-v1-0",
+    "storage_bucket": "flow-app-v1-0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862933729768:android:76736c96ce261a6f2f245d",
+        "android_client_info": {
+          "package_name": "com.expense.flow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862933729768-27tgmuo2kk83rutpcru1a5tihhpfjff4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.expense.flow",
+            "certificate_hash": "6bbffe59c96c29929f034fdd5ee36133567d2af4"
+          }
+        },
+        {
+          "client_id": "862933729768-4gpj5g8oik64jni7h6q0dtagbu60jd84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.expense.flow",
+            "certificate_hash": "1513b3af628009f382461161fd130f004aafda69"
+          }
+        },
+        {
+          "client_id": "862933729768-r68if2l1okfns5uf2bc303qup4p790e7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJoYLqW-i4-sYOhDaIN3fwNdLcHKlhXh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862933729768-r68if2l1okfns5uf2bc303qup4p790e7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
