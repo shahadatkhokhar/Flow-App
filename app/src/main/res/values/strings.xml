@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Flow</string>
+    <string name="appname">Flow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="update">Update</string>
+    <string name="debit">Debit</string>
+    <string name="credit">Credit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="about_text">A minimalist Expense manager app. This app is created to make managing the flow of your money easy
+    and hassle free. With simple and clean UI you can manage your money efficiently without any extra load.</string>
+    <string name="about">About</string>
+    <string name="for_any_queries_and_suggesions">For any queries and suggesions email us at: </string>
+    <string name="email">flow.expensemanager@gmail.com</string>
+    <string name="email_placeholder">Email</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="continue_button">Continue</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="choose_image">Choose Image</string>
+    <string name="web_client_id">862933729768-r68if2l1okfns5uf2bc303qup4p790e7.apps.googleusercontent.com</string>
+
+</resources>
