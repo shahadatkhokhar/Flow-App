@@ -55,16 +55,17 @@ public class FirebaseHelper {
                     if(!(recievedDebitList.isEmpty())){
                         for(int counter=0;counter<recievedDebitList.size();counter++){
                             HashMap<HashMap<String,String>,HashMap<String, Integer>> item = (HashMap<HashMap<String, String>, HashMap<String, Integer>>) recievedDebitList.get(counter);
-                            String itemName = String.valueOf(item.get("itemName"));
-                            String itemValue = String.valueOf(item.get("itemAmount"));
-                            Log.d("item", String.valueOf(item.get("itemName")+", "+ item.get("itemAmount")));
+                            String itemNameLabel = (String) item.keySet().toArray()[0];
+                            Log.d("itemnamelabel",itemNameLabel);
+                            String itemAmountLabel = (String) item.keySet().toArray()[1];
+                            Log.d("itemAmountLAbel",itemAmountLabel);
+                            String itemName = String.valueOf(item.get(itemNameLabel));
+                            String itemAmount = String.valueOf(item.get(itemAmountLabel));
 
-                            if(!itemName.equalsIgnoreCase("null")&&!itemValue.equalsIgnoreCase("null")) {
-                                ItemList debit = new ItemList(String.valueOf(item.get("itemName")), Integer.parseInt(String.valueOf(item.get("itemAmount"))));
-                                tempDebitList.add(debit);
-                            }
-                            else if(!String.valueOf(item.get("n")).equalsIgnoreCase("null") && !String.valueOf(item.get("o")).equalsIgnoreCase("null")){
-                                ItemList debit = new ItemList(String.valueOf(item.get("n")), Integer.parseInt(String.valueOf(item.get("o"))));
+                            Log.d("item", itemName + ", " + itemAmount);
+
+                            if (!itemName.equalsIgnoreCase("null") && !itemAmount.equalsIgnoreCase("null")) {
+                                ItemList debit = new ItemList(itemName, Integer.parseInt(itemAmount));
                                 tempDebitList.add(debit);
                             }
                         }
@@ -77,17 +78,18 @@ public class FirebaseHelper {
                     if(!(recievedCreditList.isEmpty())) {
                         for (int counter = 0; counter < recievedCreditList.size(); counter++) {
                             HashMap<HashMap<String, String>, HashMap<String, Integer>> item = (HashMap<HashMap<String, String>, HashMap<String, Integer>>) recievedCreditList.get(counter);
-                            String itemName = String.valueOf(item.get("itemName"));
-                            String itemValue = String.valueOf(item.get("itemAmount"));
 
-                            Log.d("item", item.get("itemName") + ", " + item.get("itemAmount"));
+                            String itemNameLabel = (String) item.keySet().toArray()[0];
+                            Log.d("itemnamelabel",itemNameLabel);
+                            String itemAmountLabel = (String) item.keySet().toArray()[1];
+                            Log.d("itemAmountLAbel",itemAmountLabel);
+                            String itemName = String.valueOf(item.get(itemNameLabel));
+                            String itemAmount = String.valueOf(item.get(itemAmountLabel));
 
-                            if (!itemName.equalsIgnoreCase("null") && !itemValue.equalsIgnoreCase("null")) {
-                                ItemList credit = new ItemList(String.valueOf(item.get("itemName")), Integer.parseInt(String.valueOf(item.get("itemAmount"))));
-                                tempCreditList.add(credit);
-                            }
-                            else if(!String.valueOf(item.get("n")).equalsIgnoreCase("null") && !String.valueOf(item.get("o")).equalsIgnoreCase("null")){
-                                ItemList credit = new ItemList(String.valueOf(item.get("n")), Integer.parseInt(String.valueOf(item.get("o"))));
+                            Log.d("item", itemName + ", " + itemAmount);
+
+                            if (!itemName.equalsIgnoreCase("null") && !itemAmount.equalsIgnoreCase("null")) {
+                                ItemList credit = new ItemList(itemName, Integer.parseInt(itemAmount));
                                 tempCreditList.add(credit);
                             }
                         }

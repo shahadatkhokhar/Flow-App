@@ -96,22 +96,38 @@
                 android:padding="7dp"
                 android:text="@string/choose_image" />
 
-            <EditText
-                android:id="@+id/edit_profile_name"
+            <TextView
+                android:id="@+id/profile_name_display"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@null"
-                android:editable="true"
+                android:enabled="true"
+                android:fadeScrollbars="false"
                 android:focusable="auto"
                 android:gravity="center_horizontal"
                 android:padding="10dp"
                 android:text="TextView"
                 android:textAllCaps="true"
-                android:textCursorDrawable="@null"
-                android:textSize="25dp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/profile_name_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/round_edittext_profilescreen"
+                android:gravity="center_horizontal"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:text="TextView"
+                android:textAllCaps="true"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -123,17 +139,17 @@
                 android:orientation="horizontal"
                 android:visibility="gone">
 
-                <EditText
+                <TextView
                     android:id="@+id/editTextTextEmailAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_weight="0.5"
                     android:background="#CAC9C9"
-                    android:ems="10"
                     android:hint="@string/email_placeholder"
                     android:inputType="textEmailAddress"
                     android:padding="10dp" />
+
 
                 <Button
                     android:id="@+id/update_email_button"
@@ -153,6 +169,8 @@
                 android:text="Change Password"
                 android:textColor="@color/white"
                 android:visibility="gone" />
+
+
 
             <Button
                 android:id="@+id/logout_button"
