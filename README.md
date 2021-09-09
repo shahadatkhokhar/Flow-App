@@ -18,9 +18,9 @@ Flow is a simple expense manager to monitor the flow of your money seamlessly
 
 ## Screenshots 
 
-  ![Screenshot 1](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/Screenshot_Flow_1)
+  ![Screenshot 1](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/Screenshot_Flow_1.png)
 
-  ![Screenshot 1](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/Screenshot_Flow_2)
+  ![Screenshot 1](https://raw.githubusercontent.com/Shahadatkhokhar/Flow-App/main/screenshots/Screenshot_Flow_2.png)
 
 
 ##### Created Using
